@@ -21,7 +21,7 @@ class WorkWithUser:
         self.datetime_min = None   # параметры выборки по дате
         self.datetime_max = None
 
-    # Парсим строку, введенную пользрователем, и формируем параметры выборки по дате self.datetime_min, self.datetime_max
+    # Парсим строку, введенную пользователем, и формируем параметры выборки по дате self.datetime_min, self.datetime_max
     # Возвращаем None, если все ок, либо сообщение об ошибке
     def parse_string_datetime_limits(self, string):
         splitted = string.split(',')
@@ -49,7 +49,7 @@ class WorkWithUser:
             return 'некооректно заданы границы: нижняя превышает верхнюю'
         return None
 
-    # фолрмируем пользователю предложение ввести что-либо
+    # формируем пользователю предложение ввести информацию
     def print_offer(self):
         if self.task == Task.NONE:  # задача не выбрана
             print('\nВыберите операцию:')

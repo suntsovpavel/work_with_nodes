@@ -49,7 +49,7 @@ def handler_files(task: Task,  # see enum Task
         note['id'] = 0  # по умолчанию
         
         # для получения id новой заметки просматриваем уже созданные:        
-        notes, errorMessage = get_notes(None, None)
+        notes, errorMessage = get_notes(None, None)     #(None, None): получить все заметки
         if errorMessage != None:
             return  errorMessage
         
@@ -94,7 +94,7 @@ def handler_files(task: Task,  # see enum Task
                 found = True                    
                 break    
         if not found:
-            errorMessage = 'передан некорректный idNote = ' + idNote            
+            errorMessage = 'передан некорректный idNote = ' + str(idNote)            
             
     if task == Task.DELETE:            
         notes, errorMessage = get_notes(None, None)
@@ -112,5 +112,5 @@ def handler_files(task: Task,  # see enum Task
                 break                       
                 
         if not found:
-            errorMessage = 'передан некорректный idNote = ' + idNote                      
+            errorMessage = 'передан некорректный idNote = ' + str(idNote)                      
     return  errorMessage

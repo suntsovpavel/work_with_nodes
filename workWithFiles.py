@@ -14,10 +14,10 @@ def parse_datetime(string):
         return None
     return result                
 
-# читаем файлы и формируем выборку заметок по крайним датам
+# читаем файлы и формируем выборку заметок с учетом date_min,date_max
 # Возвращаем кортеж (result, messageError): 
 #   result: список словарей { id, title, item, datatime }, т.е. данные о заметках 
-#   messageError:  сообщение об ошибке, если она возникла
+#   messageError:  сообщение об ошибке, если она возникла. Если ошибок нет, =None
 def get_notes(date_min: datetime,   # параметры выборки
               date_max: datetime):
     result = []
@@ -27,17 +27,16 @@ def get_notes(date_min: datetime,   # параметры выборки
             try:                
                 f = open(path + one, 'r', encoding='utf-8')
                 note = json.load(f)
+
+                note_datetime = parse_datetime(note['datetime'])
+                if note_datetime == None:  # распарсить не удалось
+                    return None, 'ошибка парсинга данных: ' + note['datetime']  
                                 
-                #Проверяем параметры выборки
+                # Проверяем параметры выборки
                 if date_min != None: 
-                    note_datetime = parse_datetime(note['datetime'])
-                    if note_datetime == None:  # распарсить не удалось
-                        return None, 'ошибка парсинга данных: ' + note['datetime']  
                     if note_datetime < date_min:   # не попали в выборку
                         continue
                 if date_max != None: 
-                    if note_datetime == None:  # распарсить не удалось
-                        return None, 'ошибка парсинга данных: ' + note['datetime']  
                     if note_datetime > date_max:   # не попали в выборку
                         continue
                 result.append(note)

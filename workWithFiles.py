@@ -15,10 +15,11 @@ def parse_datetime(string):
     return result                
 
 # читаем файлы и формируем выборку заметок по крайним датам
-# Результат: список словарей { id, title, item, datatime }
+# Возвращаем кортеж (result, messageError): 
+#   result: список словарей { id, title, item, datatime }, т.е. данные о заметках 
+#   messageError:  сообщение об ошибке, если она возникла
 def get_notes(date_min: datetime,   # параметры выборки
               date_max: datetime):
-    errorMessage = None
     result = []
     list_names_item = os.listdir(path)
     for one in list_names_item:        
@@ -28,16 +29,23 @@ def get_notes(date_min: datetime,   # параметры выборки
                 note = json.load(f)
                                 
                 #Проверяем параметры выборки
-                if date_min != None and parse_datetime(note['datetime']) < date_min:
-                    continue
-                if date_max != None and parse_datetime(note['datetime']) > date_max:
-                    continue
+                if date_min != None: 
+                    note_datetime = parse_datetime(note['datetime'])
+                    if note_datetime == None:  # распарсить не удалось
+                        return None, 'ошибка парсинга данных: ' + note['datetime']  
+                    if note_datetime < date_min:   # не попали в выборку
+                        continue
+                if date_max != None: 
+                    if note_datetime == None:  # распарсить не удалось
+                        return None, 'ошибка парсинга данных: ' + note['datetime']  
+                    if note_datetime > date_max:   # не попали в выборку
+                        continue
                 result.append(note)
             except Exception:      
-                errorMessage = 'ошибка чтения файла ' + path + one
+                return None, 'ошибка чтения файла: ' + path + one                
             finally:
                 f.close()            
-    return result, errorMessage  
+    return result, None  
     
 def handler_files(task: Task,  # see enum Task
                   title: str, # заголовок заметки
